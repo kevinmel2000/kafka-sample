@@ -8,8 +8,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import com.google.common.io.Resources;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +16,6 @@ import java.util.Properties;
 import java.util.Random;
 
 public class Consumer {
-    private static Logger logger = LoggerFactory.getLogger(Consumer.class);
 
     public static void main(String[] args) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -49,7 +46,7 @@ public class Consumer {
             if (records.count() == 0) {
                 timeOuts += 1;
             } else {
-                logger.debug("Got %d records after %d timeouts\n", records.count(), timeOuts);
+                System.out.printf("Got %d records after %d timeouts\n", records.count(), timeOuts);
                 timeOuts = 0;
             }
 
@@ -70,12 +67,11 @@ public class Consumer {
                             case "marker":
                                 // whenever we get a marker message, we should dump out the stats
                                 // note that the number of fast messages won't necessarily be quite constant
-                                logger.debug("%d messages received in period, latency(min, max, avg, 99%) = %d, %d, $.1f, %d (ms) \n",
+                                System.out.printf("%d messages received in period, latency(min, max, avg, 99%%) = %d, %d, %.1f, %d (ms)\n",
                                         stats.getTotalCount(),
                                         stats.getValueAtPercentile(0), stats.getValueAtPercentile(100),
                                         stats.getMean(), stats.getValueAtPercentile(99));
-
-                                logger.debug("%d messages received overall, latency(min, max, avg, 99%) = %d, %d, $.1f, %d (ms) \n",
+                                System.out.printf("%d messages received overall, latency(min, max, avg, 99%%) = %d, %d, %.1f, %d (ms)\n",
                                         global.getTotalCount(),
                                         global.getValueAtPercentile(0), global.getValueAtPercentile(100),
                                         global.getMean(), global.getValueAtPercentile(99));
